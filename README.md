@@ -2,6 +2,8 @@
 Code by Jordan Hoffmann
 Work by Seth Donoughe and Jordan Hoffmann
 
+_All code will be uploaded with the manuscript preprint_
+
 Based on experimental data from a light-sheet microscope, I developed a model that recapitulates the observed motion of nuclei.
 
 Below, we show a schematic representation of a computational method for simulating syncytial development. Nucleus movements are simulated in a 3D egg, but it is schematized here in 2D. 

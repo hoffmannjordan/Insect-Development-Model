@@ -12,7 +12,7 @@ The model is implemented in `Python.` By solving the Eikonal equation, <a href="
 
 # Geometry
 We are able to deploy our model over a wide range of different geometries. Below, we show an example in a slightly bent embryo shape as well as an ellipsoidal shape.
-![concave](./ims/shape_1.png)
+![concave](./ims/shape_1.png | width=200 )
 Below, I show an ellipsoidal geometry. 
 ![convex](./ims/shape_2.png)
 In the above two plots, the colors are random for the different nuclei.

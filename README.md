@@ -13,6 +13,15 @@ Below, we show a schematic representation of a computational method for simulati
 
 The model is implemented in `Python.` By solving the Eikonal equation, <a href="https://www.codecogs.com/eqnedit.php?latex=F(\vec{x})&space;|&space;\nabla&space;T(\vec{x})&space;|&space;=&space;1" target="_blank"><img src="https://latex.codecogs.com/gif.latex?F(\vec{x})&space;|&space;\nabla&space;T(\vec{x})&space;|&space;=&space;1" title="F(\vec{x}) | \nabla T(\vec{x}) | = 1" /></a>. I do this using the `scikit-fmm` library. This approach naturally captures many aspects of development and results in a minimal number of free parameters, almost all of which can be directly extracted from the data. 
 
+# Putting it Together
+A single shell will move due to the asymetry that is incorporated. As a result, the shell will pullthe nucleus towards a wall.
+![D1](./ims/Demo1.gif)
+Next, we need to allow for nuclei to divide. When they do so, their shells are oriented in opposite directions. We are able to extract the division rate from the data.
+![D2](./ims/Demo2.gif)
+Lastly, we need nuclei to divide and move, allowing them to interact with one another and the boundary. With an arbitrarily chosen division rate, we get rapid expansion to naturally occur, due to steric effects, and as density increases nuclei slow down.
+![D3](./ims/Demo3.gif)
+Lastly, we can tune individual parameters from the data to get something that appears more realistic.
+![F](./ims/Final.gif)
 # Geometry
 We are able to deploy our model over a wide range of different geometries. Below, we show an example in a slightly bent embryo shape as well as an ellipsoidal shape.
 ![concave](./ims/shape_1.png)

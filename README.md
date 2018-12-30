@@ -14,7 +14,7 @@ Below, we show a schematic representation of a computational method for simulati
 The model is implemented in `Python.` By solving the Eikonal equation, <a href="https://www.codecogs.com/eqnedit.php?latex=F(\vec{x})&space;|&space;\nabla&space;T(\vec{x})&space;|&space;=&space;1" target="_blank"><img src="https://latex.codecogs.com/gif.latex?F(\vec{x})&space;|&space;\nabla&space;T(\vec{x})&space;|&space;=&space;1" title="F(\vec{x}) | \nabla T(\vec{x}) | = 1" /></a>. I do this using the `scikit-fmm` library. This approach naturally captures many aspects of development and results in a minimal number of free parameters, almost all of which can be directly extracted from the data. 
 
 # Putting it Together
-A single shell will move due to the asymetry that is incorporated. As a result, the shell will pullthe nucleus towards a wall.
+A single shell will move due to the asymmetry that is incorporated. As a result, the shell will pull the nucleus towards a wall.
 ![D1](./ims/Demo1.gif)
 Next, we need to allow for nuclei to divide. When they do so, their shells are oriented in opposite directions. We are able to extract the division rate from the data.
 ![D2](./ims/Demo2.gif)
@@ -34,7 +34,7 @@ Insect eggs adopt a very large space of shapes and sizes. Many eggs are curved i
 In the above plot, the color represents the instantaneous speed of motion at the snapshot that is shown.
 
 # Comparison to Experimental Data
-By extract parameters from the data, we are able to match every quantifiable aspect of embryonic development that we are able to measure. s
+By extract parameters from the data, we are able to match every quantifiable aspect of embryonic development that we are able to measure.
  
 # Fate
 In the development of _Gryllus bimaculatus_, only a small fraction of the entire egg volume comprises the region where the embryo will coalesce. By using our developmental model, we are able to perfectly track nuclei through time. This allows us to hypothesis answers related to fate determination of nuclei (whether they will become embryonic or extra embryonic). A rough example of the capabilities are shown below. 
@@ -43,3 +43,38 @@ For each nuclei, we compute which fraction of the nuclei end up in a preselected
 
 # Rendering Code	
 A few people have asked me for the code I used to render the images. I used `povray` which can be installed easily on Ubuntu. On Mac, it is easily installed with either MacPorts or Brew. At the moment, I added a random file I had. It is a bit messy, but feel free to modify it to suit your needs or contact me. 
+
+The code is structured to render convex objects at the moment, but this is easily modified for any shape of `Polygon[]` objects. The `printvertex[vec_]` function will convert the vertices into `povray` format. The majority of the heavy lifting is this code, which structures a `mesh2` object.
+```mathematica
+triangles = Table[
+   triangles[[j]][[1]]
+   , {j, 1, Length[triangles]}];
+Len = Length[triangles];
+getnormals = Table[
+   Table[
+    {triangles[[k]][[j]], unitnormal[triangles[[k]]] // N}
+    , {j, 1, 3}]
+   , {k, 1, Length[triangles]}];
+getnormals = Partition[Flatten[getnormals], 6];
+getnormals = Table[
+   Partition[getnormals[[j]], 3]
+   , {j, 1, Length[getnormals]}];
+corrds = getnormals[[All, 1]];
+normals = getnormals[[All, 2]];
+NORMALS = Table[
+   Table[Mean[
+      Extract[normals, Position[corrds, triangles[[j]][[i]]]]] + 
+     0.0001 {RandomReal[{-1, 1}], RandomReal[{-1, 1}], 
+       RandomReal[{-1, 1}]}, {i, 1, 3}]
+   , {j, 1, Length[triangles]}];
+sets = Partition[Range[3*Len] - 1, 3];
+ps = Position[Abs[NORMALS], _?(# < 0.0001 &)];
+Table[
+  NORMALS[[ps[[j]][[1]], ps[[j]][[2]], ps[[j]][[3]]]] = 0;
+  , {j, 1, Length[ps]}];
+ps = Position[Abs[triangles], _?(# < 0.0001 &)];
+Table[
+  triangles[[ps[[j]][[1]], ps[[j]][[2]], ps[[j]][[3]]]] = 0;
+  , {j, 1, Length[ps]}];
+```
+Where it takes in a list of triangles. The code below it just generates a `.pov` file in the proper format.

@@ -11,10 +11,13 @@ Below, we show a schematic representation of a computational method for simulati
 
 ![Setup](./ims/model_cartoon.png)
 
-The model is implemented in `Python.` By solving the Eikonal equation, <a href="https://www.codecogs.com/eqnedit.php?latex=F(\vec{x})&space;|&space;\nabla&space;T(\vec{x})&space;|&space;=&space;1" target="_blank"><img src="https://latex.codecogs.com/gif.latex?F(\vec{x})&space;|&space;\nabla&space;T(\vec{x})&space;|&space;=&space;1" title="F(\vec{x}) | \nabla T(\vec{x}) | = 1" /></a>. I do this using the `scikit-fmm` library. This approach naturally captures many aspects of development and results in a minimal number of free parameters, almost all of which can be directly extracted from the data. 
+The model is implemented in `Python.` By solving the Eikonal equation, <a href="https://www.codecogs.com/eqnedit.php?latex=F(\vec{x})&space;|&space;\nabla&space;T(\vec{x})&space;|&space;=&space;1" target="_blank"><img src="https://latex.codecogs.com/gif.latex?F(\vec{x})&space;|&space;\nabla&space;T(\vec{x})&space;|&space;=&space;1" title="F(\vec{x}) | \nabla T(\vec{x}) | = 1" /></a>. I do this using the `scikit-fmm` library. 
+For each nucleus, a shell of a given size is simulated, where each voxel in the shell exerts a pull on the nucleus. This pull is normalized by a factor 1/R^2. 
+Each shell is also given an asymmetry. 
+This approach naturally captures many aspects of development and results in a minimal number of free parameters, almost all of which can be directly extracted from the data. 
 
 # Putting it Together
-A single shell will move due to the asymmetry that is incorporated. As a result, the shell will pull the nucleus towards a wall.
+A single shell will move the nucleus due to the asymmetry that is incorporated . As a result, the shell will pull the nucleus towards a wall.
 ![D1](./ims/Demo1.gif)
 Next, we need to allow for nuclei to divide. When they do so, their shells are oriented in opposite directions. We are able to extract the division rate from the data.
 ![D2](./ims/Demo2.gif)
@@ -22,16 +25,20 @@ Lastly, we need nuclei to divide and move, allowing them to interact with one an
 ![D3](./ims/Demo3.gif)
 Lastly, we can tune individual parameters from the data to get something that appears more realistic.
 ![F](./ims/Final.gif)
+The bottom image is merely a reflection of the upper image to show the full 3D nature.
+
 # Geometry
 We are able to deploy our model over a wide range of different geometries. Below, we show an example in a slightly bent embryo shape as well as an ellipsoidal shape.
 ![concave](./ims/shape_1.png)
+The bent shape is more reminiscent of a true _Gryllus_ egg shape. Nuclei move to the surface in development, and therefore in a bent geometry we employ a more sophisticated root-finding method.
 Below, I show an ellipsoidal geometry. 
 ![convex](./ims/shape_2.png)
-In the above two plots, the colors are random for the different nuclei.
+In the above two plots, the colors are random for the different nuclei. What is rendered are the shells associated with each nucleus. 
 
 Insect eggs adopt a very large space of shapes and sizes. Many eggs are curved into U shapes, have large asymmetries, and eggs range in volume by more than 8 orders of magnitude. An advantage of having an _in silico_ model is that by altering the geometry, we are able to ask what would happen if a model, tuned on one organism, where to operate in the egg of another. This allows us to make potential hypothesis and targeted experimental predictions.
 ![diversity](./ims/diversity.png)
-In the above plot, the color represents the instantaneous speed of motion at the snapshot that is shown.
+In the above plot, the color represents the instantaneous speed of motion at the snapshot that is shown. 
+Warmer colors represent faster nuclei and cooler colors represent nuclei that are moving less quickly.
 
 # Comparison to Experimental Data
 By extract parameters from the data, we are able to match every quantifiable aspect of embryonic development that we are able to measure.
@@ -42,8 +49,10 @@ In the development of _Gryllus bimaculatus_, only a small fraction of the entire
 For each nuclei, we compute which fraction of the nuclei end up in a preselected embryonic region, versus what fraction of nuclei end up in the extra-embryonic region.
 
 # Rendering Code	
-A few people have asked me for the code I used to render the images. I used `povray` which can be installed easily on Ubuntu. On Mac, it is easily installed with either MacPorts or Brew. At the moment, I added a random file I had. It is a bit messy, but feel free to modify it to suit your needs or contact me. 
-
+A few people have asked me for the code I used to render the images. I used `povray` [Link](http://www.povray.org/) which can be installed easily on Ubuntu. 
+On a Mac, it is easily installed with either [MacPorts](https://www.macports.org/) or [Brew](https://brew.sh/). At the moment, I added a random file I had. It is a bit messy, but feel free to modify it to suit your needs or contact me. 
+The code is included in the Render folder. Examples are shown below, as well as all other images in this document
+![render](./ims/render.png)
 The code is structured to render convex objects at the moment, but this is easily modified for any shape of `Polygon[]` objects. The `printvertex[vec_]` function will convert the vertices into `povray` format. The majority of the heavy lifting is this code, which structures a `mesh2` object.
 ```mathematica
 triangles = Table[
